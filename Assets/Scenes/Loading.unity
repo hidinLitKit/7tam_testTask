@@ -3569,9 +3569,13 @@ MonoBehaviour:
   authenticator: {fileID: 0}
   playerPrefab: {fileID: 4903230497409954797, guid: e4256be8701fdf14988185b377f11ca6, type: 3}
   autoCreatePlayer: 1
-  playerSpawnMethod: 0
+  playerSpawnMethod: 1
   spawnPrefabs:
   - {fileID: 8538463201896055350, guid: f9d584ebfe4194d4d882ce0360ca535c, type: 3}
+  - {fileID: 2704380300284061203, guid: 635dc0cc192f7f34d9a490f68a99c294, type: 3}
+  - {fileID: 4647024630658451125, guid: 84ea028265ded7d4ba196fe03e9e8336, type: 3}
+  - {fileID: 3758539699217384037, guid: c940b8671eac2fd43b6c8f02b2700995, type: 3}
+  - {fileID: 5160955538973219736, guid: fbeaba0fd08bed04fb26f45056d85d92, type: 3}
   snapshotSettings:
     bufferTimeMultiplier: 2
     catchupNegativeThreshold: -1

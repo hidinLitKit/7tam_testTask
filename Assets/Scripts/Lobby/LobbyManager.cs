@@ -39,6 +39,8 @@ public class LobbyManager : NetworkBehaviour
     public TMP_Text IDText;
     public Button BeginGameButton;
     public GameObject TurnManager;
+    public GameObject CoinSpawner;
+    public GameObject WinnerDetector;
     public bool inGame;
     [SyncVar] public string DisplayName;
     private void Start()
@@ -53,6 +55,7 @@ public class LobbyManager : NetworkBehaviour
             foreach(PlayerMovement player in players)
             {
                 Debug.Log("Weapon Disabled");
+                player.gameObject.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezePosition;
             }
         }
     }
@@ -153,7 +156,7 @@ public class LobbyManager : NetworkBehaviour
     public void SpawnPlayerUIPrefab(PlayerMovement player)
     {
         GameObject newUIPlayer = Instantiate(UIPlayerPrefab,UIPlayerParent);
-        newUIPlayer.GetComponent<PlayerUI>().SetPlayer(player.GetComponent<PlayerNameDisplayer>().playerDisplayName);
+        newUIPlayer.GetComponent<PlayerUI>().SetPlayer(player.GetComponent<PlayerInfoDisplayer>().playerDisplayName);
     }
     public void StartGame()
     {
@@ -165,6 +168,15 @@ public class LobbyManager : NetworkBehaviour
         NetworkServer.Spawn(newTurnManager);
         newTurnManager.GetComponent<NetworkMatch>().matchId = matchID.ToGuid();
         TurnManager turnManager = newTurnManager.GetComponent<TurnManager>();
+        if(isServer)
+        {
+            GameObject newCoinSpawner = Instantiate(CoinSpawner);
+            NetworkServer.Spawn(newCoinSpawner);
+            newCoinSpawner.GetComponent<NetworkMatch>().matchId = matchID.ToGuid();
+            newCoinSpawner.GetComponent<CoinSpawner>().Spawn(matchID);
+
+            
+        }
         foreach(Match mtch in matches)
         {
             if (mtch.ID == matchID)
@@ -178,6 +190,12 @@ public class LobbyManager : NetworkBehaviour
                 break;
             }
         }
+        if(!isServer) return;
+            GameObject winnerDetector = Instantiate(WinnerDetector);
+            NetworkServer.Spawn(winnerDetector);
+            winnerDetector.GetComponent<NetworkMatch>().matchId = matchID.ToGuid();
+            winnerDetector.GetComponent<Winner>().players = turnManager.players;
+
     }
 }
 public static class MatchExtension
