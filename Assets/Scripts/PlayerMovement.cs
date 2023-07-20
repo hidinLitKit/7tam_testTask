@@ -30,7 +30,7 @@ public class PlayerMovement : NetworkBehaviour
     private bool canShoot = true;
     [SerializeField] private GameObject bulletPrefab;
     private bool isAiming = false;
-    private bool isDead = false;
+    [SyncVar]public bool isDead ;
     private bool isInGame = false;
     [Header("MatchMaking")]
     public static PlayerMovement localPlayer;
@@ -48,6 +48,7 @@ public class PlayerMovement : NetworkBehaviour
         if(isLocalPlayer)
         {
             localPlayer = this;
+            isDead = false;
             //gameObject.GetComponent<PlayerNameDisplayer>().CmdSendName(LobbyManager.instance.DisplayName);
         }
         else
@@ -73,6 +74,7 @@ public class PlayerMovement : NetworkBehaviour
         //    CmdShoot(Quaternion.Euler(0f, 0f, bulletRotation));
         //}
         if(Input.GetButtonDown("Fire1")) CmdShoot();
+        
         if(!isDead && HP<=0)
         {
             HP=0;
@@ -80,19 +82,25 @@ public class PlayerMovement : NetworkBehaviour
             GetComponent<Rigidbody2D>().gravityScale = 0f;
             GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezePosition;
             GetComponent<Collider2D>().enabled = false;
-            isDead= true;
-            GameObject.Find("WinnerScreen(Clone)").GetComponent<Winner>().playerCount--;
+            isDead = true;
+            CmdDeath();
+            //GetComponent<Winner>().RpcChangePlayerCount();
+            //if(isServer)GameObject.FindGameObjectWithTag("WinnerScreen").GetComponent<Winner>().RpcChangePlayerCount();
         }
-        if(!isDead && isInGame && GameObject.Find("WinnerScreen(Clone)").GetComponent<Winner>().playerCount==1)
-        {
-            GameObject.Find("WinnerScreen(Clone)").GetComponent<Winner>().CmdShowWinner(GetComponent<PlayerMovement>());
-        }
+        //if(!isDead && isInGame && Winner.instance.playerCount==1) ;
+        
+    }
+    [Command]
+    public void CmdDeath()
+    {
+        isDead= true;
+        Winner.instance.GetComponent<Winner>().playerCount--;
     }
     private void OnTriggerEnter2D(Collider2D col)
     {
-        if(!isLocalPlayer) return;
         if (col.gameObject.tag=="Ammunition")
         {
+            if(!isLocalPlayer) return;
             HP-=15;
             GetComponent<PlayerInfoDisplayer>().CmdSendHp(HP);
         }

@@ -190,9 +190,9 @@ public class LobbyManager : NetworkBehaviour
                 break;
             }
         }
-        if(!isServer) return;
+        //if(!isServer) return;
             GameObject winnerDetector = Instantiate(WinnerDetector);
-            NetworkServer.Spawn(winnerDetector);
+            NetworkServer.Spawn(winnerDetector, connectionToClient);
             winnerDetector.GetComponent<NetworkMatch>().matchId = matchID.ToGuid();
             winnerDetector.GetComponent<Winner>().players = turnManager.players;
 

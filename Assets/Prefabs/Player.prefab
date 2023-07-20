@@ -756,6 +756,7 @@ MonoBehaviour:
   syncInterval: 0
   RotateWeapon: {fileID: 2565739995778382787}
   bulletPrefab: {fileID: 3758539699217384037, guid: c940b8671eac2fd43b6c8f02b2700995, type: 3}
+  isDead: 0
   matchID: 
 --- !u!114 &8810142596008043696
 MonoBehaviour:
